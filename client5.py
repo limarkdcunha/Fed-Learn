@@ -35,7 +35,7 @@ class FlowerClient(fl.client.NumPyClient):
             x=X_train,
             y=y_train,
             batch_size=32,
-            epochs=5,
+            epochs=7,
             validation_data=(X_val, y_val),
         )
         # print("\nFit history : ", r.history, "\n")
