@@ -3,7 +3,7 @@ import sys
 from helper import load_data, split_data, build_model
 
 # Data loading
-data_path = "data_3/"
+data_path = "data_6/"
 data_yes = data_path + "yes"
 data_no = data_path + "no"
 
