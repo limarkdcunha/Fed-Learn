@@ -73,7 +73,7 @@ fed_avg = fl.server.strategy.FedAvg(
 # Start Flower server for three rounds of federated learning
 fl.server.start_server(
     server_address="localhost:" + str(sys.argv[1]),
-    config=fl.server.ServerConfig(num_rounds=10),
+    config=fl.server.ServerConfig(num_rounds=3),
     grpc_max_message_length=1024 * 1024 * 1024,
     strategy=fed_byz,
 )
