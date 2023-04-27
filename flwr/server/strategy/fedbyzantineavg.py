@@ -75,7 +75,7 @@ class FedByzantineAvg(Strategy):
         self,
         fraction_fit: float = 1.0,
         fraction_evaluate: float = 1.0,
-        min_fit_clients: int = 2,
+        min_fit_clients: int = 5,
         min_evaluate_clients: int = 5,
         min_available_clients: int = 5,
         max_byzantine_clients: int = 1,
