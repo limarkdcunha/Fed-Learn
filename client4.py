@@ -2,6 +2,7 @@ import flwr as fl
 import sys
 from helper import load_data, split_data, build_model
 import random
+import numpy as np
 # Data loading
 data_path = "data_4/"
 
@@ -38,7 +39,16 @@ class FlowerClient(fl.client.NumPyClient):
             validation_data=(X_val, y_val),
         )
         # print("\nFit history : ", r.history, "\n")
-        return model.get_weights(), len(X_train), {}
+        weights = model.get_weights()
+        noise_factor = 0.1  # adjust this to control the amount of noise
+        noisy_weights = [w + np.random.randn(*w.shape) * noise_factor for w in weights]
+
+        # Set the noisy weights back into the model
+        model.set_weights(noisy_weights)
+        # noise_factor = 0.1  # adjust this to control the amount of noise
+        # noise = np.random.randn(*weights.shape) * noise_factor
+        # noisy_weights = weights + noise
+        return noisy_weights, len(X_train), {}
 
     def evaluate(self, parameters, config):
         model.set_weights(parameters)
