@@ -59,9 +59,9 @@ class FedAvg(Strategy):
         *,
         fraction_fit: float = 1.0,
         fraction_evaluate: float = 1.0,
-        min_fit_clients: int = 5,
-        min_evaluate_clients: int = 5,
-        min_available_clients: int = 5,
+        min_fit_clients: int = 3,
+        min_evaluate_clients: int = 3,
+        min_available_clients: int = 3,
         evaluate_fn: Optional[
             Callable[
                 [int, NDArrays, Dict[str, Scalar]],

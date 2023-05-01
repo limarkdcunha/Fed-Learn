@@ -57,9 +57,6 @@ def weighted_loss_avg(results: List[Tuple[int, float]]) -> float:
     num_total_evaluation_examples = sum([num_examples for num_examples, _ in results])
     weighted_losses = [num_examples * loss for num_examples, loss in results]
 
-    # print("weighted_loss_avg")
-    # print(sum(weighted_losses) / num_total_evaluation_examples)
-    # print("\n\n")
     return sum(weighted_losses) / num_total_evaluation_examples
 
 
@@ -70,14 +67,17 @@ def aggregate_byzantine(
 ) -> NDArrays:
     """Compute Byzantine average."""
 
-    # print("Start")
-    # print(byzantine_config)
-    # print("End")
     # Maintain client data in dict to avoid recalcuating it
     client_data = {}
     client_trust = byzantine_config["client_trust"]
 
+    log(
+        INFO,
+        f"Byzantine trust = {client_trust}\n\n",
+    )
+
     # Flatten list of server weight matrices
+    # Makes it easier to transfer the weights between different machines
     server_flat = np.concatenate(
         [weight_matrix.flatten() for weight_matrix in server_weights]
     )
@@ -87,7 +87,7 @@ def aggregate_byzantine(
         f"Weight vector has {length} entries and norm={round(np.linalg.norm(server_flat), 6)}",
     )
 
-    # median trust is the trust assigned to people who do not yet have trust
+    # Median trust is the trust assigned to people who do not yet have trust
     median_trust = (
         1 if len(client_trust.values()) == 0 else np.median(list(client_trust.values()))
     )
@@ -99,12 +99,13 @@ def aggregate_byzantine(
             [weight_matrix.flatten() for weight_matrix in client_weights]
         )
         client_delta = client_flat - server_flat
-
+        print("\n\n Client cid", client.cid, "\n\n")
         trust_factor = (
             median_trust
             if client.cid not in client_trust.keys()
             else client_trust[client.cid]
         )
+        print("\n\n client delta", client_delta, "\n\n")
         if np.linalg.norm(client_delta):
             unit_base += trust_factor * client_delta / np.linalg.norm(client_delta)
 
@@ -114,6 +115,10 @@ def aggregate_byzantine(
             "client_delta": client_delta,
         }
 
+    log(
+        INFO,
+        f"client data dict = {client_data}\n\n",
+    )
     # Convert to unit norm
     if np.linalg.norm(unit_base) == 0:
         unit_base[0] = 1
@@ -257,6 +262,7 @@ def aggregate_byzantine(
     return new_server_weights
 
 
+# Ignore the code below
 def aggregate_qffl(
     parameters: NDArrays, deltas: List[NDArrays], hs_fll: List[NDArrays]
 ) -> NDArrays:

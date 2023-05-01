@@ -36,29 +36,6 @@ def get_evaluate_fn(model, x_val, y_val):
     return evaluate
 
 
-# Load and compile model for server-side parameter evaluation
-# Data loading
-# data_path = "augmented data/"
-
-# data_yes = data_path + "yes"
-# data_no = data_path + "no"
-
-# IMG_WIDTH, IMG_HEIGHT = (240, 240)
-# X, y = load_data([data_yes, data_no], (IMG_WIDTH, IMG_HEIGHT))
-
-# # Data split
-# X_train, y_train, X_val, y_val, X_test, y_test = split_data(X, y, test_size=0.2)
-
-# print(X_val.shape)
-# Define image shape
-# IMG_SHAPE = (IMG_WIDTH, IMG_HEIGHT, 3)
-
-# Build model
-# model = build_model(IMG_SHAPE)
-
-# Compile the model
-# model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
-
 # Fed byzantine averaging
 fed_byz = fl.server.strategy.FedByzantineAvg(
     # eval_fn=get_evaluate_fn(model, X_val, y_val),
@@ -73,7 +50,7 @@ fed_avg = fl.server.strategy.FedAvg(
 # Start Flower server for three rounds of federated learning
 fl.server.start_server(
     server_address="localhost:" + str(sys.argv[1]),
-    config=fl.server.ServerConfig(num_rounds=10),
+    config=fl.server.ServerConfig(num_rounds=3),
     grpc_max_message_length=1024 * 1024 * 1024,
-    strategy=fed_avg,
+    strategy=fed_byz,
 )
